@@ -48,29 +48,39 @@ const AI_CONFIG = {
 
 // 获取API密钥的安全函数
 function getAPIKey() {
-    // 1. 首先尝试从环境变量获取（Cloudflare Worker/Pages）
-    // 支持多种变量名格式
+    // 1. 首先从APP_CONFIG获取（Cloudflare Pages环境变量）
+    if (window.APP_CONFIG && window.APP_CONFIG.AI_API_KEY && 
+        window.APP_CONFIG.AI_API_KEY !== '{{AI_API_KEY}}') {
+        console.log('✅ 从APP_CONFIG获取到API密钥');
+        return window.APP_CONFIG.AI_API_KEY;
+    }
+    
+    // 2. 尝试从全局变量获取（向后兼容）
     if (typeof AI_API_KEY !== 'undefined' && AI_API_KEY) {
+        console.log('✅ 从全局变量获取到API密钥');
         return AI_API_KEY;
     }
     
-    // 2. 尝试获取可能的其他环境变量名
+    // 3. 尝试从window对象获取
     if (typeof window !== 'undefined' && window.AI_API_KEY) {
+        console.log('✅ 从window对象获取到API密钥');
         return window.AI_API_KEY;
     }
     
-    // 3. 尝试从localStorage获取用户设置
+    // 4. 尝试从localStorage获取用户设置
     try {
         const userApiKey = localStorage.getItem('hongJie_apiKey');
         if (userApiKey) {
+            console.log('✅ 从localStorage获取到API密钥');
             return userApiKey;
         }
     } catch (e) {
         console.warn('无法访问localStorage');
     }
     
-    // 4. 如果都没有，返回null（将使用降级模式）
+    // 5. 如果都没有，返回null（将使用降级模式）
     console.warn('🔒 未检测到API密钥，AI功能将使用降级模式');
+    console.warn('💡 请确保在Cloudflare Pages中正确设置了AI_API_KEY环境变量');
     return null;
 }
 
@@ -112,47 +122,34 @@ const conversationManager = new ConversationManager();
 
 // AI API调用函数
 async function callAI(userMessage) {
-    // 检查API密钥是否可用
-    if (!isAPIKeyAvailable()) {
-        console.warn('API密钥不可用，使用降级模式');
-        return getFallbackResponse(userMessage);
-    }
-
     try {
         // 添加用户消息到对话历史
         conversationManager.addMessage('user', userMessage);
 
-        const response = await fetch(AI_CONFIG.apiUrl, {
+        // 使用Cloudflare Functions API端点
+        const response = await fetch('/api/chat', {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${AI_CONFIG.apiKey}`,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                model: AI_CONFIG.model,
-                messages: conversationManager.getMessages(),
-                max_tokens: AI_CONFIG.maxTokens,
-                temperature: AI_CONFIG.temperature,
-                stream: false
+                message: userMessage,
+                conversationHistory: conversationManager.messages.slice(-20) // 最近10轮对话
             })
         });
 
-        if (!response.ok) {
-            throw new Error(`API错误: ${response.status} ${response.statusText}`);
-        }
-
         const data = await response.json();
         
-        if (!data.choices || !data.choices[0] || !data.choices[0].message) {
-            throw new Error('API返回数据格式错误');
+        if (data.success && data.reply) {
+            // 添加AI回复到对话历史
+            conversationManager.addMessage('assistant', data.reply);
+            return data.reply;
+        } else if (data.fallback && data.reply) {
+            // API不可用时的降级回复
+            return data.reply;
+        } else {
+            throw new Error(data.error || 'API调用失败');
         }
-
-        const aiReply = data.choices[0].message.content;
-        
-        // 添加AI回复到对话历史
-        conversationManager.addMessage('assistant', aiReply);
-        
-        return aiReply;
 
     } catch (error) {
         console.error('AI API调用失败:', error);

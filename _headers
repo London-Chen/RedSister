@@ -6,14 +6,15 @@
   Referrer-Policy: strict-origin-when-cross-origin
 
 # 静态资源缓存
-/css/*
-  Cache-Control: public, max-age=86400
-
 /js/*
-  Cache-Control: public, max-age=86400
+  Cache-Control: public, max-age=31536000, immutable
+
+/css/*
+  Cache-Control: public, max-age=31536000, immutable
 
 /*.png
   Cache-Control: public, max-age=86400
 
+# 环境变量支持
 /*.html
-  Cache-Control: public, max-age=3600 
+  X-API-Key: {{AI_API_KEY}} 
