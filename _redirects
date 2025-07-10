@@ -1,0 +1,11 @@
+# SPA路由重定向（如果需要）
+# /app/* /index.html 200
+
+# 确保聊天页面可以直接访问
+/chat /chat.html 200
+
+# 测试页面重定向（可选，用于调试）
+/test /test-ai.html 200
+
+# 404页面重定向到首页
+/* /index.html 404 

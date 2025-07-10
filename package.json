@@ -1,0 +1,34 @@
+{
+  "name": "nanjing-hongjie",
+  "version": "1.0.0",
+  "description": "南京红姐AI聊天网站 - 基于SiliconFlow API的角色扮演聊天应用",
+  "main": "index.html",
+  "scripts": {
+    "dev": "python3 -m http.server 8000",
+    "dev:node": "npx serve . -p 8000",
+    "preview": "npx serve . -p 3000",
+    "deploy": "echo 'Please use Cloudflare Pages to deploy this project'"
+  },
+  "keywords": [
+    "ai",
+    "chatbot",
+    "siliconflow",
+    "web",
+    "javascript",
+    "html5",
+    "css3"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/你的用户名/南京红姐.git"
+  },
+  "homepage": "https://your-domain.pages.dev",
+  "devDependencies": {
+    "serve": "^14.2.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+} 

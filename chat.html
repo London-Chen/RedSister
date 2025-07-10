@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>与南京红姐聊天 - 私密对话</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/chat.css">
+</head>
+<body>
+    <!-- 聊天界面容器 -->
+    <div class="chat-container">
+        <!-- 左侧栏 -->
+        <aside class="chat-sidebar">
+            <!-- 红姐信息卡片 -->
+            <div class="character-card">
+                <div class="character-avatar">
+                    <img src="红姐头像.png" alt="南京红姐" />
+                </div>
+                <div class="character-info">
+                    <h2 class="character-name">南京红姐</h2>
+                    <p class="character-status">
+                        <span class="status-indicator online"></span>
+                        在线
+                    </p>
+                    <p class="character-description">
+                        你的专属AI伴侣，随时准备与你进行深度对话。
+                    </p>
+                </div>
+            </div>
+
+            <!-- 对话选项 -->
+            <div class="chat-options">
+                <h3>聊天设置</h3>
+                <div class="option-group">
+                    <button class="option-btn" onclick="clearConversation()">
+                        <span class="option-icon">🗑️</span>
+                        清除对话
+                    </button>
+                    <button class="option-btn" onclick="goHome()">
+                        <span class="option-icon">🏠</span>
+                        返回首页
+                    </button>
+                </div>
+            </div>
+
+            <!-- 快速开场白 -->
+            <div class="quick-starters">
+                <h3>快速开始</h3>
+                <div class="starter-buttons">
+                    <button class="starter-btn" onclick="sendQuickMessage('你好红姐，我来找你了')">
+                        👋 和红姐打招呼
+                    </button>
+                    <button class="starter-btn" onclick="sendQuickMessage('我想了解真正的你')">
+                        💋 探索红姐的秘密
+                    </button>
+                    <button class="starter-btn" onclick="sendQuickMessage('你到底是谁？')">
+                        🔥 直接一点
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- 主聊天区域 -->
+        <main class="chat-main">
+            <!-- 聊天头部 -->
+            <header class="chat-header">
+                <div class="chat-header-info">
+                    <div class="header-avatar">
+                        <img src="红姐头像.png" alt="南京红姐" />
+                    </div>
+                    <div class="header-text">
+                                            <h1>与南京红姐聊天</h1>
+                    <p class="header-subtitle">
+                        私密、安全的AI对话体验 
+                        <span id="aiStatus" class="ai-status">🤖 AI已就绪</span>
+                    </p>
+                    </div>
+                </div>
+                <div class="chat-header-actions">
+                    <button class="header-btn" onclick="toggleInfo()" title="信息">
+                        <span class="btn-icon">ℹ️</span>
+                    </button>
+                    <button class="header-btn" onclick="goHome()" title="返回首页">
+                        <span class="btn-icon">✕</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- 消息容器 -->
+            <div class="messages-container" id="messagesContainer">
+                <!-- 欢迎消息 -->
+                <div class="message-group">
+                    <div class="message ai-message">
+                        <div class="message-avatar">
+                            <img src="红姐头像.png" alt="红姐" />
+                        </div>
+                        <div class="message-content">
+                            <div class="message-bubble">
+                                <p>呵呵，又有人来找我了～我是红姐 💋</p>
+                                <p>我就在这里等着你...想聊什么都可以哦，我很好奇你心里藏着什么秘密呢～</p>
+                            </div>
+                            <div class="message-time">刚刚</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 输入区域 -->
+            <div class="chat-input-container">
+                <div class="input-wrapper">
+                    <textarea 
+                        id="messageInput" 
+                        class="message-input" 
+                        placeholder="输入你想说的话..."
+                        rows="1"
+                        maxlength="1000"
+                    ></textarea>
+                    <button id="sendButton" class="send-button" onclick="sendMessage()">
+                        <span class="send-icon">📨</span>
+                    </button>
+                </div>
+                <div class="input-info">
+                    <span class="char-counter">
+                        <span id="charCount">0</span>/1000
+                    </span>
+                    <span class="input-hint">按 Enter 发送，Shift+Enter 换行</span>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 加载状态指示器 -->
+    <div class="loading-indicator" id="loadingIndicator">
+        <div class="loading-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <p>红姐正和别的男人聊天，请稍等...</p>
+    </div>
+
+    <!-- 信息弹窗 -->
+    <div class="info-modal" id="infoModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>关于南京红姐</h3>
+                <button class="modal-close" onclick="toggleInfo()">✕</button>
+            </div>
+            <div class="modal-body">
+                <p>南京红姐是你的专属AI聊天伴侣，专门设计来提供有温度的对话体验。</p>
+                <ul>
+                    <li>🔒 你的对话完全私密安全</li>
+                    <li>💭 支持情感交流和深度对话</li>
+                    <li>🎯 个性化回应你的需求</li>
+                    <li>🌟 24小时随时在线陪伴</li>
+                </ul>
+                <p><strong>提示：</strong>你可以和红姐聊任何话题，她会以开放和理解的态度回应你。</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/ai-chat.js"></script>
+    <script src="js/chat.js"></script>
+</body>
+</html> 

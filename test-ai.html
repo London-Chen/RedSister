@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI API 测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #1a1c2e;
+            color: white;
+        }
+        .test-container {
+            background: #2a2d3a;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+        }
+        button {
+            background: #e91e63;
+            color: white;
+            cursor: pointer;
+        }
+        .response {
+            background: #343746;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>红姐AI API测试</h1>
+    
+    <div class="test-container">
+        <h2>发送测试消息</h2>
+        <input type="text" id="testInput" placeholder="输入测试消息" value="你好红姐">
+        <button onclick="testAI()">测试AI回复</button>
+        
+        <div id="status"></div>
+        <div id="response" class="response" style="display:none;"></div>
+    </div>
+
+    <script src="js/ai-chat.js"></script>
+    <script>
+        async function testAI() {
+            const input = document.getElementById('testInput');
+            const status = document.getElementById('status');
+            const response = document.getElementById('response');
+            
+            const message = input.value.trim();
+            if (!message) return;
+            
+            status.innerHTML = '🔄 正在发送请求...';
+            response.style.display = 'none';
+            
+            try {
+                const reply = await window.AIChat.generateResponse(message);
+                status.innerHTML = '✅ 成功获取AI回复';
+                response.innerHTML = reply;
+                response.style.display = 'block';
+            } catch (error) {
+                status.innerHTML = '❌ 请求失败: ' + error.message;
+                response.style.display = 'none';
+            }
+        }
+        
+        // 页面加载时检查AI状态
+        window.addEventListener('load', function() {
+            const status = document.getElementById('status');
+            if (window.AIChat) {
+                status.innerHTML = '🤖 AI系统已加载，可以开始测试';
+            } else {
+                status.innerHTML = '❌ AI系统加载失败';
+            }
+        });
+    </script>
+</body>
+</html> 

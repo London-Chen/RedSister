@@ -1,0 +1,42 @@
+name = "nanjing-hongjie"
+compatibility_date = "2023-12-01"
+
+# Cloudflare Pages 配置
+[env.production]
+vars = { }
+# 环境变量在Cloudflare Dashboard中设置
+# AI_API_KEY = "your_api_key_here"
+
+[env.preview]
+vars = { }
+
+# 静态文件处理
+[[rules]]
+type = "Text"
+globs = ["**/*.html", "**/*.css", "**/*.js"]
+fallthrough = true
+
+# 缓存配置
+[build]
+command = ""
+cwd = ""
+watch_dir = ""
+
+# 页面路由配置
+[[pages.headers]]
+for = "/*"
+[pages.headers.values]
+X-Frame-Options = "DENY"
+X-Content-Type-Options = "nosniff"
+X-XSS-Protection = "1; mode=block"
+Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[pages.headers]]
+for = "/css/*"
+[pages.headers.values]
+Cache-Control = "public, max-age=31536000, immutable"
+
+[[pages.headers]]
+for = "/js/*"
+[pages.headers.values]
+Cache-Control = "public, max-age=31536000, immutable" 
