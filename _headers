@@ -12,6 +12,11 @@
   Access-Control-Allow-Methods: GET, POST, OPTIONS
   Access-Control-Allow-Headers: Content-Type, Authorization
 
+# 环境变量注入脚本
+/js/env-vars.js
+  Cache-Control: no-cache
+  Content-Type: application/javascript
+
 # 静态资源缓存
 /css/*
   Cache-Control: public, max-age=31536000, immutable

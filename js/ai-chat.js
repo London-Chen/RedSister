@@ -49,11 +49,17 @@ const AI_CONFIG = {
 // 获取API密钥的安全函数
 function getAPIKey() {
     // 1. 首先尝试从环境变量获取（Cloudflare Worker/Pages）
-    if (typeof AI_API_KEY !== 'undefined') {
+    // 支持多种变量名格式
+    if (typeof AI_API_KEY !== 'undefined' && AI_API_KEY) {
         return AI_API_KEY;
     }
     
-    // 2. 尝试从localStorage获取用户设置
+    // 2. 尝试获取可能的其他环境变量名
+    if (typeof window !== 'undefined' && window.AI_API_KEY) {
+        return window.AI_API_KEY;
+    }
+    
+    // 3. 尝试从localStorage获取用户设置
     try {
         const userApiKey = localStorage.getItem('hongJie_apiKey');
         if (userApiKey) {
@@ -63,7 +69,7 @@ function getAPIKey() {
         console.warn('无法访问localStorage');
     }
     
-    // 3. 如果都没有，返回null（将使用降级模式）
+    // 4. 如果都没有，返回null（将使用降级模式）
     console.warn('🔒 未检测到API密钥，AI功能将使用降级模式');
     return null;
 }
